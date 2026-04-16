@@ -1,0 +1,33 @@
+/* Унікальний акцент для картки */
+.product-card {
+    border-top: 8px solid #ff5f6d !important;
+}
+
+.custom-accent {
+    color: #ff5f6d;
+}
+
+/* Плавний зум картинки при наведенні (залишаємо кастомним, бо це специфічна взаємодія) */
+.product-image {
+    transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+.product-image:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+/* Стилізація кнопки (градієнт) */
+.buy-button {
+    background: linear-gradient(to right, #ff5f6d, #ffc371);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 15px rgba(255, 95, 109, 0.4);
+    transition: all 0.3s ease;
+}
+
+.buy-button:hover {
+    color: white;
+    box-shadow: 0 8px 25px rgba(255, 95, 109, 0.6);
+    transform: translateY(-2px);
+}

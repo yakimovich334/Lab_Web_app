@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Бронювання готелю (SPA) - Назарій Якимович</title>
+    
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://javascript.daypilot.org/demo/js/daypilot-all.min.js?v=2024"></script>
+    
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+    <div style="background:#2c3e50; color:white; padding:20px; border-bottom: 4px solid #3498db;">
+        <h1>Система управління готелем (SPA)</h1>
+        <p>Студент: <strong>Якимович Назарій</strong> | Група: <strong>ПЗІС-25003м</strong></p>
+    </div>
+</header>
+
+<main style="padding: 20px;">
+    
+    <div class="toolbar" style="margin-bottom: 20px; background: #f8f9fa; padding: 15px; border: 1px solid #dee2e6; border-radius: 5px; display: flex; align-items: center;">
+        <div style="margin-right: 20px;">
+            <label>Місяць:</label>
+            <select id="selectMonth" style="padding: 5px;">
+                <option value="01">Січень</option>
+                <option value="02">Лютий</option>
+                <option value="03">Березень</option>
+                <option value="04">Квітень</option>
+                <option value="05">Травень</option>
+                <option value="06">Червень</option>
+                <option value="07">Липень</option>
+                <option value="08">Серпень</option>
+                <option value="09">Вересень</option>
+                <option value="10">Жовтень</option>
+                <option value="11">Листопад</option>
+                <option value="12">Грудень</option>
+            </select>
+        </div>
+
+        <div style="margin-right: 20px;">
+            <label>Рік:</label>
+            <select id="selectYear" style="padding: 5px;">
+                <?php 
+                $currentYear = date("Y");
+                for($i = 2015; $i <= 2030; $i++) {
+                    $selected = ($i == 2017) ? "selected" : "";
+                    echo "<option value='$i' $selected>$i</option>";
+                }
+                ?>
+            </select>
+        </div>
+
+        <button id="btnChangeDate" style="padding: 6px 20px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            Перейти
+        </button>
+    </div>
+
+    <div id="dp"></div>
+</main>
+
+<script type="text/javascript">
+    // 1. Ініціалізація DayPilot Scheduler
+    var dp = new DayPilot.Scheduler("dp");
+
+    // 2. Налаштування відображення
+    dp.resourceColumns = [
+    {name: "Номер", id: "name"},
+    {name: "Місткість", id: "capacity"}, // має збігатися з capacity в БД
+    {name: "Статус", id: "status"}     // має збігатися з status в БД
+    ];
+
+    dp.scale = "Day";
+    dp.startDate = "2017-01-01";
+    dp.days = 31;
+    dp.cellWidth = 50;
+    dp.headerHeight = 40;
+
+    dp.timeHeaders = [
+        { "groupBy": "Month", "format": "MMMM yyyy" },
+        { "groupBy": "Day", "format": "d" }
+    ];
+
+    // 3. Функції завантаження даних (AJAX)
+    function loadResources() {
+        $.ajax({
+            url: "backend_rooms.php",
+            dataType: "json",
+            success: function(data) {
+                dp.resources = data;
+                dp.update();
+            }
+        });
+    }
+
+    function loadEvents() {
+    // Вказуємо параметри початку і кінця, щоб бекенд знав, за який період шукати
+    dp.events.load("backend_reservations.php");
+    }
+
+    // 4. Обробка ручного вибору дати
+    $("#btnChangeDate").click(function() {
+        var month = $("#selectMonth").val();
+        var year = $("#selectYear").val();
+        
+        // Встановлюємо нову дату (перше число)
+        var startStr = year + "-" + month + "-01";
+        
+        // Розраховуємо кількість днів у вибраному місяці
+        var daysInMonth = new Date(year, month, 0).getDate();
+
+        dp.startDate = startStr;
+        dp.days = daysInMonth;
+        
+        dp.update();
+        loadEvents(); // Перевантажуємо броні для нової дати
+        dp.message("Календар оновлено: " + $("#selectMonth option:selected").text() + " " + year);
+    });
+
+    // 5. Операції Drag-and-Drop (Move)
+    dp.onEventMoved = function (args) {
+        $.post("backend_move.php", {
+            id: args.e.id(),
+            newStart: args.newStart.toString(),
+            newEnd: args.newEnd.toString(),
+            newResource: args.newResource
+        }, function() {
+            dp.message("Бронювання переміщено");
+        });
+    };
+
+    // 6. Операція Resize
+    dp.onEventResized = function (args) {
+        $.post("backend_move.php", {
+            id: args.e.id(),
+            newStart: args.newStart.toString(),
+            newEnd: args.newEnd.toString(),
+            newResource: args.e.resource()
+        }, function() {
+            dp.message("Тривалість змінена");
+        });
+    };
+
+    // Ініціалізація
+   dp.init();
+   loadResources(); 
+   loadEvents();
+</script>
+
+<footer>
+    <address style="padding:20px; color:#95a5a6; border-top:1px solid #eee;">
+        (с) 2026 Назарій Якимович. SPA-застосунок на базі DayPilot.
+    </address>
+</footer>
+
+</body>
+</html>

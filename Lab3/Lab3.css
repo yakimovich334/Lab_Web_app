@@ -1,0 +1,103 @@
+/* Базові стилі */
+body {
+    background: #f0f2f5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* Картка товару */
+.product-container {
+    background: white;
+    width: 700px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    overflow: hidden;
+    border-top: 8px solid #ff5f6d; /* Яскравий акцент зверху */
+    padding: 20px;
+}
+
+.product-header h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #2d3436;
+    margin-bottom: 20px;
+}
+
+/* Розміщення контенту у два стовпчики */
+.product-body {
+    display: flex;
+    gap: 30px;
+    padding: 10px;
+}
+
+/* Стилізація зображення */
+.product-image {
+    flex: 1;
+    margin: 0;
+}
+
+.product-image img {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    transition: 0.4s;
+}
+
+.product-image img:hover {
+    transform: scale(1.05) rotate(1deg); /* Анімація при наведенні */
+}
+
+figcaption {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #636e72;
+    margin-top: 8px;
+    font-style: italic;
+}
+
+/* Права колонка з текстом */
+.product-info {
+    flex: 1.2;
+}
+
+h2 {
+    font-size: 1.1rem;
+    color: #ff5f6d;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 5px;
+    margin-top: 0;
+}
+
+.stars {
+    color: #fdcb6e;
+    font-size: 1.2rem;
+}
+
+/* Кнопка та її анімація */
+.product-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.buy-button {
+    background: linear-gradient(to right, #ff5f6d, #ffc371);
+    color: white;
+    border: none;
+    padding: 15px 80px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 4px 15px rgba(255, 95, 109, 0.4);
+    animation: pulse 2s infinite; /* Анімація для привернення уваги */
+}
+
+
+.buy-button:hover {
+    filter: brightness(1.1);
+}
